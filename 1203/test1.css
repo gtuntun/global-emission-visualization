@@ -1,0 +1,121 @@
+
+    .fixed-line-container {
+      position: fixed; /* 将容器固定定位 */
+      top: 0; /* 将容器置于页面顶部 */
+      left: 0; /* 将容器置于页面左侧 */
+      width: 100%; /* 设置容器宽度为页面宽度 */
+      height: 50px; /* 设置容器高度 */
+      background-color: #333; /* 设置容器背景色为黑色 */
+      color: white; /* 设置文字颜色为白色 */
+      display: flex; /* 使用 Flex 布局 */
+      align-items: center; /* 垂直居中容器内的内容 */
+      font-weight: bold; /* 将文字加粗 */
+      z-index: 9999; /* 设置容器层级，确保它位于其他元素之上 */
+      font-size: 20px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid black; /* 添加顶部边框，实线，白色 */
+    }
+    footer {
+      position: relative;
+      width: 100%;
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      box-sizing: border-box;
+      margin-top: auto; /* 自动调整与上方内容的距离 */
+    }
+    body {
+      width: 80%; /* 设置 body 元素的宽度为网页宽度的 80% */
+      margin: 0 auto; /* 设置 body 元素居中对齐 */
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f4;
+      padding: 0;
+    }
+    h1 {
+      color: black; /* 设置文本颜色 */
+      width: 100%; /* 设置宽度 */
+      margin: 0 auto; /* 设置左右边距为自动以实现居中 */
+      background-color: yellow;
+      font-weight: bold; /* 将文字加粗 */
+      margin-top: 200px;
+      font-size: 28px;
+    }
+    #map {
+     width: 70%;
+     margin: 0 auto; /* 设置左右边距为自动以实现居中 */
+     margin-bottom: 30px; 
+   }
+   .checkbox-container {
+      display: inline-block; /* 设置多选框容器为行内块元素 */
+      margin-right: 30px;
+    }
+    .checkbox-container label {
+      font-size: 20px;
+    }
+    .checkbox-container input[type="checkbox"] {
+      transform: scale(1.5); /* 改变多选框的尺寸 */
+    }
+    #csvTable {
+     margin-top: 50px; /* 留出头部的高度 */
+     overflow-y: auto;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      border: 1px solid #252323; /* 添加表格线 */
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #0c0c0c;
+      border-right: 1px solid #0c0c0c; /* 添加右侧边框线 */
+    }
+    th:hover {
+      cursor: pointer;
+    }
+    thead tr {
+      position: sticky;
+      top: 0;
+      background-color: #f5f5f5;
+    }
+    thead th {
+      position: sticky;
+      top: 50px;
+      background-color: #5c5959;
+      z-index: 1;
+      color: #f4f4f4;
+    }
+    .test {
+      color: #423636;
+      font-size: 10px;
+    }
+
+    .dropdown {
+    position: relative;
+    width: 100px;
+    }
+
+    .dropdown select {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border-radius: 4px;
+  background-color: #f2f2f2;
+  color: #333;
+  appearance: none; /* 隐藏默认下拉箭头，仅适用于部分浏览器 */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+    }
+
+   .dropdown::before {
+  content: "\25BC"; /* Unicode 编码为下拉箭头图标 */
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none; /* 禁止点击事件 */
+  }
+  .bubble {
+    fill: steelblue;
+}

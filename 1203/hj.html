@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" width="400" height="300">
+        <!-- X轴和Y轴 -->
+        <line x1="50" y1="250" x2="350" y2="250" stroke="black" />
+        <line x1="50" y1="250" x2="50" y2="50" stroke="black" />
+        
+        <!-- 数据点 -->
+        <circle id="year2001" cx="100" cy="250" r="5" fill="blue" />
+        <circle id="year2003" cx="200" cy="220" r="5" fill="red" />
+        <circle id="year2004" cx="250" cy="235" r="5" fill="green" />
+        <circle id="year2006" cx="350" cy="175" r="5" fill="orange" />
+        <circle id="year2007" cx="400" cy="200" r="5" fill="purple" />
+      </svg>
+      
+      <script type="text/ecmascript">
+        <![CDATA[
+          const data = [
+            { year: 2001, count: 20 },
+            { year: 2003, count: 30 },
+            { year: 2004, count: 25 },
+            { year: 2006, count: 15 },
+            { year: 2007, count: 20 }
+          ];
+      
+          // 使用JavaScript更新数据点的位置
+          data.forEach(item => {
+            const circle = document.getElementById(`year${item.year}`);
+            const newX = 50 + (item.year - 2001) * 50; // 假设每年占50个像素
+            const newY = 250 - item.count * 5; // 假设每个计数占5个像素
+            circle.setAttribute("cx", newX);
+            circle.setAttribute("cy", newY);
+          });
+        ]]>
+      </script>
+      
+</body>
+</html>

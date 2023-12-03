@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+</head>
+<body>
+
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="https://unpkg.com/topojson@3"></script>
+  <script>
+
+var lagend=d3.Legend;
+// 定义一个异步函数，用于获取数据并返回到变量中
+async function getworld() {
+  try {
+    // 使用fetch函数从服务器获取数据
+    // 函数使用fetch函数发送HTTP请求来获取数据，并使用await关键字等待获取数据的响应。
+    // 返回Promise对象
+    const response = await fetch('world.json');
+
+    // 检查响应是否成功
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // 使用.json()方法将数据解析为JSON对象
+    const world = await response.json();
+
+    // 返回解析后的数据
+    return world;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+}
+
+
+// 该函数接收一个名为world的参数，该参数应该是一个包含地理数据的对象。
+// 函数使用topojson.feature方法将这个地理数据转换为一个包含国家信息的对象，并将其作为返回值返回。
+function getcountries(world){return(
+  // 返回值是经过转换的包含国家信息的对象。
+    topojson.feature(world, world.objects.countries)
+)};
+
+
+// 读取CSV文件
+var hale;
+
+// 异步函数，用于加载地图数据sssssss
+async function loadMapData() {
+  // 使用D3.js库中的d3.csv方法从名为"hale.csv"的文件中获取数据，并使用d3.autoType函数将数据转换为适当的数据类型。
+    var halep = d3.csv("hale.csv", d3.autoType);
+    // 通过await关键字等待Promise对象的解析结果，即等待数据获取完成
+    hale= await halep;
+    console.log("Data received hale:",hale);
+}
+loadMapData();
+
+// 调用getData函数，并将结果赋值给一个变量
+getworld().then((world) => {
+  console.log('Data received world:', world);
+  var countries=(getcountries(world));
+  console.log('Data received contries:', countries);
+
+  const width = 2000;
+  const marginTop = 46;
+  const height = width / 2 + marginTop;
+  // Fit the projection.
+  // 使用D3.js库中的d3.geoEqualEarth方法创建了一个等地面投影（Equal Earth Projection）的地理投影器（projection）。
+  // 投影器的属性被设置为适应给定的范围。[[2, marginTop + 2], [width - 2, height]]表示投影器的范围，
+  // 包含一个矩形区域的两个对角坐标点。
+  const projection = d3.geoEqualEarth().fitExtent([[2, marginTop + 2], [width - 2, height]], {type: "Sphere"});
+
+  // 使用D3.js库中的d3.geoPath方法创建了一个地理路径生成器（path generator），
+  // 并将之前创建的地理投影器（projection）作为参数传递给生成器。生成器根据提供的地理投影器将地理坐标转换为屏幕坐标。
+  const path = d3.geoPath(projection);
+  // Index the values and create the color scale.
+  // const valuemap = new Map(hale.map(d => [d.country, d.hale]));
+  // const valuemap = new Map(hale.map(d => [d.name, d.hale]));
+  // max:1,226,702.22 
+  // min:104.13
+
+  // 使用D3.js库中的d3.scaleQuantize方法创建了一个量化比例尺.量化比例尺用于将连续的数值范围映射到离散的颜色值。
+  // [1, 10]表示输入的数值范围为1到10.d3.schemeGreens[9]表示要使用的颜色方案，
+  // 这里选择了D3.js库中提供的"Greens"方案的9个离散颜色值。
+  const color = d3.scaleQuantize([1, 10], d3.schemeGreens[9]);
+
+  // hale.map(d => [d.name, d.hale])通过遍历hale数组的每个元素，创建一个新的数组，其中每个元素都是一个
+  // 由name和hale属性组成的数组。这样就生成了一组键值对，其中键是d.name，值是d.hale。
+  // 通过new Map()构造函数，使用这组键值对数组来创建一个新的Map对象。
+  const valuemap = new Map(hale.map(d => [d.name, d.hale]));
+// const color = d3.scaleSequential(d3.extent(valuemap.values()), d3.interpolateYlGnBu);
+  // Create the SVG container.
+  const svg =d3.select("body")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("viewBox", [0, 0, width, height]) // 设置svg元素的视图框（viewBox），
+      // 其中[0, 0, width, height]表示视图框的左上角点坐标为(0, 0)，宽度和高度与预定义的width和height相同。
+      .attr("style", "max-width: 100%; height: auto;");
+  // svg.append("g")
+  //     .attr("transform", "translate(610,20)")
+  //     .append(() => Legend(color, {title: "Unemployment rate (%)", width: 260}));
+  svg.append("path")
+    .datum({type: "Sphere"}) // 设置datum数据为一个对象，表示绘制球体。
+    .attr("fill", "white") // 表示球体填充颜色为白色。
+    .attr("stroke", "currentColor") // 设置stroke属性为currentColor，表示使用当前元素的颜色作为描边颜色。
+    .attr("d", path); // 设置d属性为之前创建的地理路径生成器path，用于指定球体的路径数据。
+  svg.append("g") // 在svg元素中添加一个g元素，用于容纳一组path元素。
+    .selectAll("path") // 选择所有的path元素。
+    .data(countries.features) // 绑定数据，将countries.features数组中的每个元素与选中的path元素关联起来。
+    .join("path") // 将绑定的数据应用到选择集中的元素上，如果绑定的数据比选择集中的元素多，
+    // 则创建新的path元素；如果绑定的数据比选择集中的元素少，则移除多余的元素。
+    // .attr("fill", d => color(valuemap.get(d.properties.name)))
+    .attr("fill", d => color(valuemap.get(d.properties.name))) // 根据每个元素的属性值，
+    // 使用valuemap和color比例尺来确定fill属性的值，从而设置path元素的填充颜色。
+    // .attr("fill",d => valuemap.get(d.properties.name))
+    // .attr("fill","blue")
+    .attr("d", path) // 设置d属性为之前创建的地理路径生成器path，用于指定路径数据。
+    .append("title") // 在每个path元素中添加一个title元素。
+      .text(d => `${d.properties.name}\n${valuemap.get(d.properties.name)}`); // 设置title元素的文本内容，
+      // 其中包含d.properties.name和对应的valuemap值，用于显示元素的名称和相关信息。
+
+    
+
+});
+</script>
+</body>
+</html>
